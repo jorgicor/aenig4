@@ -95,8 +95,16 @@ static struct machine s_machine = {
 	{ 0, 0, 0, 0, 0 }
 };
 
+enum {
+	MODE_LOOP,
+	MODE_FILTER,
+	MODE_FILE
+};
 
+static int s_mode = MODE_LOOP;
 static int s_debug_on = 0;
+static char *s_srcfname = NULL;
+static char *s_dstfname = NULL;
 
 /* Case insensitive compare. Returns 1 or 0. */
 static int streq(const char *a, const char *b)
@@ -427,7 +435,7 @@ static int is_rotor_setting_ok(int set[])
 	return 1;
 }
 
-static void run_rotors(void)
+static int run_rotors(void)
 {
 	int i;
 	char *tok;
@@ -443,7 +451,7 @@ static void run_rotors(void)
 
 	if (!is_rotor_setting_ok(set)) {
 		printf("Bad rotor setting\n");
-		return;
+		return 0;
 	}
 
 	for (i = 0; i < MACHINE_NROTORS; i++) {
@@ -452,10 +460,10 @@ static void run_rotors(void)
 	}
 
 	reset_bases();
-	run_config();
+	return 1;
 }
 
-static void run_rings(void)
+static int run_rings(void)
 {
 	int i, rotori;
 	char *tok;
@@ -468,7 +476,7 @@ static void run_rings(void)
 			set[i] = atoi(tok);
 		if (tok == NULL || set[i] <= 0 || set[i] > 26) {
 			printf("Bad ring setting\n");
-			return;
+			return 0;
 		}
 	}
 
@@ -478,10 +486,10 @@ static void run_rings(void)
 	}
 
 	reset_bases();
-	run_config();
+	return 1;
 }
 
-static void run_bases(void)
+static int run_bases(void)
 {
 	int i, a;
 	char *tok;
@@ -504,11 +512,11 @@ static void run_bases(void)
 		s_machine.base[i] = base[i];
 	}
 
-	run_config();
-	return;
+	return 1;
 
 bad:
 	printf("Bad formatted bases\n");
+	return 0;
 }
 
 /* Unplug the code 'id; be sure that the pair is unplugged. */
@@ -523,7 +531,7 @@ static void plugboard_unplug(struct plugboard *pb, int id)
 	}
 }
 
-static void run_plug(void)
+static int run_plug(void)
 {
 	int i, a, b;
 	char *tok;
@@ -557,14 +565,14 @@ static void run_plug(void)
 	}
 
 	check_plugboard(&s_machine.pboard);
-	run_config();
-	return;
+	return 1;
 
 bad:
 	printf("Bad plugboard setting\n");
+	return 0;
 }
 
-static void run_unplug(void)
+static int run_unplug(void)
 {
 	int i, a;
 	char *tok;
@@ -595,52 +603,11 @@ static void run_unplug(void)
 	}
 
 	check_plugboard(&s_machine.pboard);
-	run_config();
-	return;
+	return 1;
 
 bad:
 	printf("Bad plugboard setting\n");
-}
-
-static void run_file(void)
-{
-	int c;
-	char *src, *dst;
-	FILE *fsrc, *fdst;
-
-	src = strtok(NULL, TOKSEP);
-	if (src == NULL)
-		goto bad;
-
-	dst = strtok(NULL, TOKSEP);
-	if (dst == NULL)
-		goto bad;
-
-	if ((fsrc = fopen(src, "rb")) == NULL) {
-		printf("Cannot open %s\n", src);
-		return;
-	}
-
-	if ((fdst = fopen(dst, "wb")) == NULL) {
-		fclose(fsrc);
-		printf("Cannot open %s\n", dst);
-		return;
-	}
-
-	while ((c = getc(fsrc)) != EOF) {
-		c = encode_char(c);
-		if (s_debug_on) {
-			putchar((char) c);
-		}
-		putc(c, fdst);
-	}
-
-	fclose(fdst);
-	fclose(fsrc);
-	return;
-
-bad:
-	printf("Syntax error\n");
+	return 0;
 }
 
 static void run_help(void)
@@ -658,13 +625,10 @@ static void run_help(void)
       	printf("        Unplug all plugboard signals or the given signals.\n");
 	printf("> in (ex. in HELLO)\n");
       	printf("        Enter the characters for cyphering.\n");
-	printf("> file (ex. file a.txt b.txt)\n");
-	printf("        Encode the first file into the second.\n");
 	printf("> config        Print the current machine settings.\n");
 	printf("> debug         Switch debug mode.\n");
 	printf("> help          Show this help.\n");
 	printf("> quit          Exit the program.\n");
-
 }
 
 static void run_debug(void)
@@ -677,12 +641,30 @@ static void run_debug(void)
 	}
 }
 
+static int set_key(const char *key)
+{
+	int r;
+	char line[256];
+
+	snprintf(line, sizeof(line), "key %s", key);
+	strtok(line, TOKSEP); 
+	r = run_rotors();
+	if (r)
+		r = run_rings();
+	if (r)
+		r = run_bases();
+	if (r)
+		r = run_plug();
+	return r;
+}
+
 static int run_line(char *s)
 {
 	char *tok;
-	int r;
+	int r, prconfig;
 
 	r = 1;
+	prconfig = 0;
 	tok = strtok(s, TOKSEP);
 	if (tok == NULL) {
 		/* nothing */
@@ -693,23 +675,24 @@ static int run_line(char *s)
 	} else if (streq(tok, "debug")) {
 		run_debug();
 	} else if (streq(tok, "rotors")) {
-		run_rotors();
+		prconfig = run_rotors();
 	} else if (streq(tok, "rings")) {
-		run_rings();
+		prconfig = run_rings();
 	} else if (streq(tok, "bases")) {
-		run_bases();
+		prconfig = run_bases();
 	} else if (streq(tok, "plug")) {
-		run_plug();
+		prconfig = run_plug();
 	} else if (streq(tok, "unplug")) {
-		run_unplug();
-	} else if (streq(tok, "file")) {
-		run_file();
+		prconfig = run_unplug();
 	} else if (streq(tok, "config")) {
 		run_config();
 	} else if (streq(tok, "help")) {
 		run_help();
 	} else {
 		printf("unknown command\n");
+	}
+	if (prconfig) {
+		run_config();
 	}
 	return r;
 }
@@ -733,33 +716,80 @@ static void print_version(FILE *f)
 
 static void loop(void)
 {
-	int r;
-	char line[80];
+	int r, c;
+	size_t len;
+	char line[75];
 
 	print_version(stdout);
 	printf("\nType 'help' for the list of available commands.\n\n");
 	run_config();
 	printf("> ");
 	while (fgets(line, sizeof(line), stdin) != NULL) {
-		r = run_line(line);
-		if (!r)
-			return;
+		len = strlen(line);
+		if (len > 0 && line[len - 1] != '\n') {
+			printf("Line too long. Nothing done.\n");
+			do {
+				c = getchar();
+			} while (c != EOF && c != '\n');
+		} else {
+			r = run_line(line);
+			if (!r)
+				return;
+		}
 		printf("> ");
+	}
+}
+
+static void encode_files(void)
+{
+	int c;
+	FILE *fps, *fpd;
+
+	if ((fps = fopen(s_srcfname, "rb")) == NULL) {
+		fprintf(stderr, PACKAGE ": cannot open %s\n", s_srcfname);
+		return;
+	}
+
+	if ((fpd = fopen(s_dstfname, "wb")) == NULL) {
+		fclose(fps);
+		fprintf(stderr, PACKAGE ": cannot open %s\n", s_dstfname);
+		return;
+	}
+
+	while ((c = getc(fps)) != EOF) {
+		c = encode_char(c);
+		putc(c, fpd);
+	}
+
+	fclose(fpd);
+	fclose(fps);
+}
+
+static void filter(void)
+{
+	int c;
+
+	while ((c = getc(stdin)) != EOF) {
+		c = encode_char(c);
+		putchar((char) c);
 	}
 }
 
 static void print_help(const char *argv0)
 {
 	static const char *help =
-"aenig4 emulates the Enigma M4 cypher machine used by the U-boot division of\n"
-"the German Navy during World War II. It can be used as well to emulate the\n"
-"Enigma I machine (M1, M2, M3).\n"
+"Usage: %s [OPTION]... [ SOURCE DEST ]\n"
 "\n"
-"Usage: %s [OPTION]...\n"
+"If SOURCE and DEST are specified, encode the SOURCE file into the DEST\n"
+"file. If not, the program will run in interactive mode, unless the option\n"
+"--filter is given, in which case stdin will be encoded to stdout.\n"
 "\n"
 "Options:\n"
-"  -h, --help\t\tdisplay this help and exit\n"
-"  -v, --version\t\toutput version information and exit\n"
+"  -f, --filter        Encode stdin to stdout.\n"      	
+"  -h, --help          Display this help and exit.\n"
+"  -k, --key=KEY       Set the initial machine configuration. For example:\n"
+"                      -k \"c Gamma V IV I 1 26 2 3 RTJZ BT RJ\".\n"
+"  -v, --version       Output version information and exit.\n"
 "\n"
 "Report bugs to: <" PACKAGE_BUGREPORT ">.\n"
 "Home page: <" PACKAGE_URL ">.\n"
@@ -776,6 +806,8 @@ static void handle_options(int argc, char *argv[])
 	static struct ngetopt_opt ops[] = {
 		{ "version", 0, 'v' },
 		{ "help", 0, 'h' },
+		{ "key", 1, 'k' },
+		{ "filter", 0, 'f' },
 		{ NULL, 0, 0 },
 	};
 
@@ -790,6 +822,14 @@ static void handle_options(int argc, char *argv[])
 		case 'h':
 			print_help(argv[0]);
 			exit(EXIT_SUCCESS);
+		case 'k':
+			if (!set_key(ngo.optarg)) {
+				exit(EXIT_FAILURE);
+			}
+			break;
+		case 'f':
+			s_mode = MODE_FILTER;
+			break;
 		case '?':
 			fprintf(stderr, PACKAGE": unrecognized option %s\n",
 				ngo.optarg);
@@ -801,12 +841,37 @@ static void handle_options(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 	} while (c != -1);
+
+	if (argc > ngo.optind) {
+		s_srcfname = argv[ngo.optind];
+	}
+
+	if (argc > ngo.optind + 1) {
+		s_dstfname = argv[ngo.optind + 1];
+	}
+
+	if (s_srcfname != NULL && s_dstfname == NULL) {
+		fprintf(stderr, PACKAGE": unspecified DEST file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (s_dstfname != NULL) {
+		if (s_mode == MODE_FILTER) {
+			fprintf(stderr, PACKAGE
+				": warning: --filter option ignored\n");
+		}
+		s_mode = MODE_FILE;
+	}
 }
 
 int main(int argc, char *argv[])
 {
-	handle_options(argc, argv);
 	init();
-	loop();
+	handle_options(argc, argv);
+	switch (s_mode) {
+	case MODE_LOOP: loop(); break;
+	case MODE_FILTER: filter(); break;
+	case MODE_FILE: encode_files(); break;
+	}
 	return EXIT_SUCCESS;
 }

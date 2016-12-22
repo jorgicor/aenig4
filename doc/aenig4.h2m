@@ -1,40 +1,81 @@
-[BRIEF MANUAL]
-When the program starts, it prints the current machine configuration, for
-example:
-
+[DESCRIPTION]
+.PP
+aenig4 emulates the Enigma M4 cipher machine used by the U\-Boot division of
+the German Navy during World War II. It can be used as well to emulate the
+Enigma I machine (M1, M2, M3).
+/If SOURCE and DEST are/
+.PP
+Only the characters ABCDEFGHIJKLMNOPQRSTUVWXYZ and the lower case equivalents
+are encoded. Anything else is left unchanged.
+[KEY]
+.PP
+With \fB\-k\fR an initial machine configuration can be specified which causes
+the encoding to be different. Using the program with an encoded text will
+return the original text if used with the same initial key.
+.PP
+The default machine configuration is: b Beta I II III 1 1 1 1 AAAA.
+This means that the rotors UKW\-b, Beta, I, II and III are installed on
+the machine, in that order. The rings on the last 4 rotors are set to
+position 1, and these same rotors are moved to the position A.
+There are no connections made on the plugboard.
+.PP
+The first rotor can be b or c, to set the UKW\-b or UKW\-c reflectors.
+The second to Beta or Gamma.
+The next 3 rotors can be selected from the
+roman numbers I to VIII, but they can not be repeated.
+The position of each ring is a number from 1 to 26.
+And the position of each rotor, a letter from A to Z.
+Finally, the connections made on the plugboard can be specified by a list
+of letters in pairs.
+.PP
+For example, \fB\-k\fR "c Gamma V IV VIII 2 6 1 9 JRWZ AT PV", will set the
+rotors c, Gamma, V, IV and VIII on the machine. It will set the ring on the
+rotor Gamma to the position 2 and move this same rotor to position J. The
+rings on the rotors V, IV and VIII will be set to positions 6, 1 and 9,
+respectively; and these rotors moved to positions R, W, Z. Finally, it will
+connect the letter A with T, and P with V, on the plugboard.
+[EXAMPLES]
+.TP
+\fBaenig4\fR \fB\-k\fR "b gamma i v iv 1 2 3 4 RTVZ KM OS" source.txt dest.txt
+Encode source.txt into dest.txt using the initial machine configuration given.
+.TP
+\fBecho\fR "HELLO" | \fBaenig4\fR --filter | \fBaenig4\fR --filter
+This will print HELLO back.
+[INTERACTIVE MODE]
+.PP
+When the program starts in interactive mode, it prints the current machine
+configuration. Initially, it is:
+.PP
 b Beta I II III 01 01 01 01 AAAA
-
-This means that the machine is configured with the rotors UKW-b, Beta, I, II
-and III on that order. Next, the ring setting for each rotor (except the UKW-b)
-is given (01 01 01 01). And following is the position of each rotor (except the
-UKW-b) as you would see it on the real machine.
-
-Next to it you would see the current connections made on the plugboard, if any.
-For example, if you have connected A with R and C with J, you should see
-something like:
-
-b Beta I II III 01 01 01 01 AAAA AR CJ
-
-Type `help` on the program prompt to see the commands that you have available
+.PP
+Type 'help' on the program prompt to see the commands that you have available
 in order to change the machine configuration.
-
-To encode any message, type `in` followed by a sentence (max. 75 chars):
-
+.PP
+To encode any message, type 'in' followed by a sentence (max. 70 chars):
+.PP
 > in HELLO
 .br
 >>>> ILBDA
-
-With the default settings, `HELLO`  will be translated to `ILBDA`.
-
-To decypher a message, you have to put the same settings in the machine as when
-you started your message, and enter the cyphered string. In this case:
-
+.PP
+With the default settings, HELLO will be translated to ILBDA.
+.PP
+To decipher a message, you have to set the same settings as when
+you typed the original message, and enter the ciphered string. In this case:
+.PP
 > bases AAAA
 .br
 > in ILBDA
 .br
 >>>> HELLO
-
+[Enigma I]
+.PP
+The Enigma M4 machine was compatible with the Enigma I if configured properly.
+To emulate an Enigma I with reflector UKW\-B, you must set the Enigma M4 with
+the reflector UKW\-b and the rotor Beta in position A with its ring at position
+1. To emulate the Enigma I with reflector UKW\-C, set the reflector UKW\-c and
+rotor Gamma in position A and ring at position 1.
+[See also]
+.PP
 For more info about the machine, see:
-
+.br
 http://cryptomuseum.com/crypto/enigma/m4/index.htm
