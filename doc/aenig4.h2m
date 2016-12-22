@@ -36,7 +36,7 @@ respectively; and these rotors moved to positions R, W, Z. Finally, it will
 connect the letter A with T, and P with V, on the plugboard.
 [EXAMPLES]
 .TP
-\fBaenig4\fR \fB\-k\fR "b gamma i v iv 1 2 3 4 RTVZ KM OS" source.txt dest.txt
+\fBaenig4\fR \fB\-k\fR "b gamma i v iv 1 2 3 4 rtvz km os" source.txt dest.txt
 Encode source.txt into dest.txt using the initial machine configuration given.
 .TP
 \fBecho\fR "HELLO" | \fBaenig4\fR --filter | \fBaenig4\fR --filter
@@ -78,4 +78,4 @@ rotor Gamma in position A and ring at position 1.
 .PP
 For more info about the machine, see:
 .br
-http://cryptomuseum.com/crypto/enigma/m4/index.htm
+.URL http://cryptomuseum.com/crypto/enigma/m4/index.htm
