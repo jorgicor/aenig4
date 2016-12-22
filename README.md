@@ -24,7 +24,7 @@ you will have these files:
 
 ~~~
 aenig4.exe      The program.
-aenig4.txt      Manual.
+aenig4.html     Manual.
 readme.txt      This file.
 copying.txt     License.
 changelog.txt   What's new in this version.

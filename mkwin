@@ -55,7 +55,8 @@ make_zip () {
 	mkdir $aenig4_wname
 	cd $aenig4_wname
 	cp ../$aenig4_xname/src/aenig4.exe .
-	nroff -man doc/aenig4.1 | col -bx > aenig4.txt
+#	nroff -man doc/aenig4.1 | col -bx > aenig4.txt
+	groff -m man -T html ../$aenig4_xname/doc/aenig4.1 > aenig4.html
 	cp ../$aenig4_xname/COPYING copying.txt
 	cp ../$aenig4_xname/README.md readme.txt
 	cp ../$aenig4_xname/CHANGELOG.md changelog.txt
