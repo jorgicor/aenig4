@@ -20,7 +20,7 @@ position 1, and these same rotors are moved to the position A.
 There are no connections made on the plugboard.
 .PP
 The first rotor can be b or c, to set the UKW\-b or UKW\-c reflectors.
-The second to Beta or Gamma.
+The second can be Beta or Gamma.
 The next 3 rotors can be selected from the
 roman numbers I to VIII, but they can not be repeated.
 The position of each ring is a number from 1 to 26.
