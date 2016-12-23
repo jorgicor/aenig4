@@ -624,7 +624,7 @@ static void run_help(void)
 	printf("> unplug (ex. unplug all) (ex. unplug AFRT)\n");
       	printf("        Unplug all plugboard signals or the given signals.\n");
 	printf("> in (ex. in HELLO)\n");
-      	printf("        Enter the characters for cyphering.\n");
+      	printf("        Enter the characters for ciphering.\n");
 	printf("> config        Print the current machine settings.\n");
 	printf("> debug         Switch debug mode.\n");
 	printf("> help          Show this help.\n");
