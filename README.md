@@ -1,7 +1,7 @@
 Intro
 =====
 
-`aenig4` emulates the Enigma M4 cypher machine used by the U-boot division of
+`aenig4` emulates the Enigma M4 cipher machine used by the U-boot division of
 the German Navy during World War II. It can be used as well to emulate the
 Enigma I machine (M1, M2, M3).
 
