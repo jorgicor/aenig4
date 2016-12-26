@@ -66,6 +66,8 @@ make_zip () {
 		rm $i
 		mv tmp.txt $i
 	done
+	sed -i 's,http://cryptomuseum.com/crypto/enigma/m4/index.htm,<a href="http://cryptomuseum.com/crypto/enigma/m4/index.htm">http://cryptomuseum.com/crypto/enigma/m4/index.htm</a>,' aenig4.html
+	sed -i 's,http://jorgicor.sdfeu.org/aenig4,<a href="http://jorgicor.sdfeu.org/aenig4">http://jorgicor.sdfeu.org/aenig4</a>,' aenig4.html
 	i686-w64-mingw32-strip aenig4.exe
 	cd ..
 	zip -r $aenig4_wname.zip $aenig4_wname

@@ -6,8 +6,12 @@ Change Log
 
 ### What's new
 
-- Fixed: Urls were not being rendered in the Unix man page.
+- Fixed: Urls were not being rendered in the Unix man page. (1)
 - Fixed: Cypher to cipher.
+
+##### Notes
+
+1. Making Urls as links on Windows manual.
 
 1.00 - 2016-12-21
 -----------------
