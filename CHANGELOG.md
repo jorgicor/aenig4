@@ -1,13 +1,13 @@
 Change Log
 ==========
 
-1.01 - 2016-12-23
+1.01 - 2016-12-26
 -----------------
 
 ### What's new
 
-- Cypher to cipher.
-- Urls were not being rendered in Unix man pages.
+- Fixed: Urls were not being rendered in the Unix man page.
+- Fixed: Cypher to cipher.
 
 1.00 - 2016-12-21
 -----------------

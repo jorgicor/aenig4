@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT([aenig4 (Enigma M4 Cipher Machine Emulator)],
-	[1.00],
+	[1.01],
 	[jorge.giner@hotmail.com],
 	aenig4,
 	[http://jorgicor.sdfeu.org/aenig4])
