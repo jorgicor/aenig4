@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* Enigma M4 Cypher Machine Emulator */
+/* Enigma M4 Cipher Machine Emulator */
 
 #include "config.h"
 #include "ngetopt.h"
@@ -165,7 +165,7 @@ static int is_plugboard_ok(struct plugboard *pb)
 	return 1;
 }
 
-void check_plugboard(struct plugboard *pb)
+static void check_plugboard(struct plugboard *pb)
 {
 	if (!is_plugboard_ok(pb)) {
 		fprintf(stderr, "fatal: bad plugboard\n");
@@ -266,8 +266,6 @@ static void move_rotors(void)
 		move[i] = is_rotor_on_notch(
 			&s_rotors[s_machine.rotors[i + 1]],
 			s_machine.base[i + 1]);
-		/*stepwhen = s_rotors[s_machine.rotors[i + 1]].stepwhen;
-		  move[i] = s_machine.base[i + 1] == stepwhen - 'A';*/
 	}
 
 	/* Double stepping:
@@ -277,8 +275,6 @@ static void move_rotors(void)
 		move[i] |= is_rotor_on_notch(
 			&s_rotors[s_machine.rotors[i]],
 			s_machine.base[i]);
-		/*stepwhen = s_rotors[s_machine.rotors[i]].stepwhen;
-		  move[i] |= s_machine.base[i] == stepwhen - 'A';*/
 	}
 
 	for (i = 2; i < MACHINE_NROTORS; i++) {
