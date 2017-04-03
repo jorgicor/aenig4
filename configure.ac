@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT([aenig4 (Enigma M4 Cipher Machine Emulator)],
-	[1.01],
+	[1.02],
 	[jorge.giner@hotmail.com],
 	aenig4,
 	[http://jorgicor.sdfeu.org/aenig4])
@@ -10,7 +10,7 @@ AC_INIT([aenig4 (Enigma M4 Cipher Machine Emulator)],
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_AUX_DIR(config)
-AM_INIT_AUTOMAKE(-Wall -Werror -Wportability foreign subdir-objects
+AM_INIT_AUTOMAKE(-Wall -Werror -Wportability subdir-objects
 		 color-tests parallel-tests)
 AC_CONFIG_HEADERS([config.h])
 
