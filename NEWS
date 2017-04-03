@@ -1,0 +1,15 @@
+2016-12-26
+
+	* Version 1.01
+
+	* Fixed: urls were not being rendered in the Unix man page. Urls made
+	  links in the Windows manual.
+
+	* Changed the word 'cypher' to 'cipher'.
+
+2016-12-21
+
+	* Version 1.0
+
+	* Initial release.
+
