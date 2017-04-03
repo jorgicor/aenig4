@@ -1,5 +1,5 @@
-Intro
-=====
+aenig4 - Enigma M4 Cipher Machine Emulator
+==========================================
 
 `aenig4` emulates the Enigma M4 cipher machine used by the U-boot division of
 the German Navy during World War II. It can be used as well to emulate the

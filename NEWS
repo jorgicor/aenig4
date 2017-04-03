@@ -1,3 +1,14 @@
+2017-04-03
+
+	* Version 1.02
+
+	* Fixed: including the `INSTALL` file in the source package.
+
+	* Adding a set of files: NEWS (substitutes CHANGELOG.md), AUTHORS,
+	  ChangeLog, README (README.md is now only for GitHub).
+
+	* No important change in the program.
+
 2016-12-26
 
 	* Version 1.01
