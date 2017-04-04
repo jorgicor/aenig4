@@ -1,13 +1,13 @@
-2017-04-04
+Unreleased
 
-	* Version 1.03
+	* Changed the format of the NEWS file.
+
+1.03	2017-04-04
 
 	* Fixed: accepting long command line options in combination with '=' to
 	  specify their arguments, for example, --key="key data...".
 
-2017-04-03
-
-	* Version 1.02
+1.02	2017-04-03
 
 	* Fixed: including the `INSTALL` file in the source package.
 
@@ -16,18 +16,14 @@
 
 	* No important change in the program.
 
-2016-12-26
-
-	* Version 1.01
+1.01	2016-12-26
 
 	* Fixed: urls were not being rendered in the Unix man page. Urls made
 	  links in the Windows manual.
 
 	* Changed the word 'cypher' to 'cipher'.
 
-2016-12-21
-
-	* Version 1.0
+1.00	2016-12-21
 
 	* Initial release.
 
