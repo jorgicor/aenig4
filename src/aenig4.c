@@ -813,7 +813,6 @@ static void handle_options(int argc, char *argv[])
 		switch (c) {
 		case 'v':
 			print_version(stdout);
-			// print_author();
 			exit(EXIT_SUCCESS);
 		case 'h':
 			print_help(argv[0]);
