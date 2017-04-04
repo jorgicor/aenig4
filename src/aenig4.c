@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Jorge Giner Cordero
+Copyright (c) 2016-2017 Jorge Giner Cordero
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -697,7 +697,7 @@ static const char *s_version[] =
 {
 PACKAGE_STRING,
 "",
-"Copyright (C) 2016 Jorge Giner Cordero.",
+"Copyright (C) 2016-2017 Jorge Giner Cordero.",
 "This is free software: you are free to change and redistribute it.",
 "There is NO WARRANTY, to the extent permitted by law."
 };
@@ -827,13 +827,17 @@ static void handle_options(int argc, char *argv[])
 			s_mode = MODE_FILTER;
 			break;
 		case '?':
-			fprintf(stderr, PACKAGE": unrecognized option %s\n",
+			fprintf(stderr, PACKAGE ": unrecognized option %s\n",
 				ngo.optarg);
 			exit(EXIT_FAILURE);
 		case ':':
+			fprintf(stderr, PACKAGE ": %s needs an argument\n",
+				ngo.optarg);
+			exit(EXIT_FAILURE);
+		case ';':
 			fprintf(stderr, PACKAGE
-				": the -%c option needs an argument\n",
-				(char) ngo.optopt);
+				": %s does not allow for arguments\n",
+				ngo.optarg);
 			exit(EXIT_FAILURE);
 		}
 	} while (c != -1);
