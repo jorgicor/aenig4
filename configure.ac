@@ -5,7 +5,7 @@
 # aenig4, Enigma M4 cipher machine emulator.
 # ===========================================================================
 
-AC_INIT([aenig4 (Enigma M4 Cipher Machine Emulator)],
+AC_INIT([aenig4],
 	[1.04],
 	[jorge.giner@hotmail.com],
 	aenig4,
