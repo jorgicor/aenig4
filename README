@@ -10,16 +10,15 @@ http://cryptomuseum.com/crypto/enigma/m4/index.htm
 
 aenig4 is free software. See the file `COPYING` for copying conditions.
 
-Copyright (c) 2016 Jorge Giner Cordero
-
-Home page: http://jorgicor.sdfeu.org/aenig4  
+Home page: https://jorgicor.niobe.org/aenig4  
+GitHub: https://github.com/jorgicor/aenig4
 Send bug reports to: jorge.giner@hotmail.com
 
 Windows precompiled binaries
 ============================
 
 A precompiled distribution for *Microsoft Windows* is provided in a ZIP file.
-It can be found at http://jorgicor.sdfeu.org/aenig4 . After decompressing it,
+It can be found at https://jorgicor.niobe.org/aenig4 . After decompressing it,
 you will have these files:
 
 ~~~
@@ -51,7 +50,7 @@ Compiling from the source distribution
 If you have the official source package, and you are building on a Unix
 environment (this includes *Cygwin* on *Windows*), you can find detailed
 instructions in the file `INSTALL`. The complete source distribution can always
-be found at http://jorgicor.sdfeu.org/aenig4 .  
+be found at https://jorgicor.niobe.org/aenig4 .  
 
 After installing, you can type `man aenig4` to see a brief explanation on how
 to use the `aenig4` program.

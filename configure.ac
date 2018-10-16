@@ -1,11 +1,15 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+# ===========================================================================
+# aenig4, Enigma M4 cipher machine emulator.
+# ===========================================================================
+
 AC_INIT([aenig4 (Enigma M4 Cipher Machine Emulator)],
-	[1.03],
+	[1.04],
 	[jorge.giner@hotmail.com],
 	aenig4,
-	[http://jorgicor.sdfeu.org/aenig4])
+	[https://jorgicor.niobe.org/aenig4])
 
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -13,6 +17,9 @@ AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(-Wall -Werror -Wportability subdir-objects
 		 color-tests parallel-tests)
 AC_CONFIG_HEADERS([config.h])
+
+AC_DEFINE([COPYRIGHT_YEARS], ["2018"], [Years of copyright])
+AC_SUBST(COPYRIGHT_YEARS, [2018])
 
 # Checks for programs.
 AC_PROG_CC

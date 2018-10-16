@@ -1,27 +1,9 @@
-/*
-Copyright (c) 2016-2017 Jorge Giner Cordero
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/* Enigma M4 Cipher Machine Emulator */
+/* ===========================================================================
+ * aenig4, Enigma M4 cipher machine emulator.
+ *
+ * Main program.
+ * ===========================================================================
+ */
 
 #include "config.h"
 #include "ngetopt.h"
@@ -574,10 +556,6 @@ static int run_unplug(void)
 	char *tok;
 	unsigned char unplugs[N];
 
-	for (i = 0; i < N; i++) {
-		unplugs[i] = 0;
-	}
-
 	memset(unplugs, 0, sizeof(unplugs));
 	tok = strtok(NULL, TOKSEP);
 	if (tok != NULL && streq(tok, "all")) {
@@ -608,23 +586,69 @@ bad:
 
 static void run_help(void)
 {
-	printf("> rotors (ex. rotors b Beta I II VIII)\n");
-      	printf("        Set the machine rotors. Available rotors:\n");
-	printf("        b, c, Beta, Gamma, I, II, ... VIII.\n");
-	printf("> rings (ex. rings 1 1 7 26)\n");
-      	printf("        Set the ring setting for the installed rotors.\n");
-	printf("> bases (ex. bases AAXR)\n");
-      	printf("        Set the rotor positions for the installed rotors.\n");
-	printf("> plug (ex. plug AJ PS RT)\n");
-      	printf("        Plug the given signals on the plugboard.\n");
-	printf("> unplug (ex. unplug all) (ex. unplug AFRT)\n");
-      	printf("        Unplug all plugboard signals or the given signals.\n");
-	printf("> in (ex. in HELLO)\n");
-      	printf("        Enter the characters for ciphering.\n");
-	printf("> config        Print the current machine settings.\n");
-	printf("> debug         Switch debug mode.\n");
-	printf("> help          Show this help.\n");
-	printf("> quit          Exit the program.\n");
+	printf("rotors (ex. rotors b Beta I II VIII)\n");
+      	printf("           Set the machine rotors. Available rotors:\n");
+	printf("           b, c, Beta, Gamma, I, II, ... VIII.\n");
+	printf("rings (ex. rings 1 1 7 26)\n");
+      	printf("           Set the ring setting for the installed rotors.\n");
+	printf("bases (ex. bases AAXR)\n");
+      	printf("           Set the rotor positions for the installed rotors.\n");
+	printf("plug (ex. plug AJ PS RT)\n");
+      	printf("           Plug the given signals on the plugboard.\n");
+	printf("unplug (ex. unplug all) (ex. unplug AFRT)\n");
+      	printf("           Unplug all plugboard signals or the given signals.\n");
+	printf("in (ex. in HELLO)\n");
+      	printf("           Enter the characters for ciphering.\n");
+	printf("config     Print the current machine settings.\n");
+	printf("debug      Toggle debug mode on/off.\n");
+	printf("help       Show this help.\n");
+	printf("license    Show the license.\n");
+	printf("quit       Quit the program.\n");
+}
+
+static void print_copyright(FILE *f)
+{
+	static const char *copyright =
+"Copyright (C) " COPYRIGHT_YEARS " Jorge Giner Cordero.\n";
+
+	fputs(copyright, f);
+}
+
+static void print_license(FILE *f)
+{
+	static const char *license[] = {
+"Permission is hereby granted, free of charge, to any person obtaining",
+"a copy of this software and associated documentation files (the",
+"\"Software\"), to deal in the Software without restriction, including",
+"without limitation the rights to use, copy, modify, merge, publish,",
+"distribute, sublicense, and/or sell copies of the Software, and to",
+"permit persons to whom the Software is furnished to do so, subject to",
+"the following conditions:",
+"",
+"The above copyright notice and this permission notice shall be included",
+"in all copies or substantial portions of the Software.",
+"",
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,",
+"EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF",
+"MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.",
+"IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY",
+"CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,",
+"TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE",
+"SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+       	};
+
+	int i;
+
+	for (i = 0; i < NELEMS(license); i++) {
+		fprintf(f, "%s\n", license[i]);
+	}
+}
+
+static void run_license(void)
+{
+	print_copyright(stdout);
+	printf("\n");
+	print_license(stdout);
 }
 
 static void run_debug(void)
@@ -684,6 +708,8 @@ static int run_line(char *s)
 		run_config();
 	} else if (streq(tok, "help")) {
 		run_help();
+	} else if (streq(tok, "license")) {
+		run_license();
 	} else {
 		printf("unknown command\n");
 	}
@@ -693,21 +719,21 @@ static int run_line(char *s)
 	return r;
 }
 
-static const char *s_version[] =
-{
-PACKAGE_STRING,
-"",
-"Copyright (C) 2016-2017 Jorge Giner Cordero.",
-"This is free software: you are free to change and redistribute it.",
-"There is NO WARRANTY, to the extent permitted by law."
-};
-
 static void print_version(FILE *f)
 {
-	int i;
+	fprintf(f, "%s\n", PACKAGE_STRING);
+}
 
-	for (i = 0; i < NELEMS(s_version); i++)
-		fprintf(f, "%s\n", s_version[i]);
+static void print_prologue(FILE *f)
+{
+	static const char *notice =
+"This is free software: you are free to change and redistribute it,\n"
+"but there is NO WARRANTY. Type LICENSE to show the details.\n";
+
+	print_version(f);
+	fputs("\n", f);
+	fputs(notice, f);
+	fputs("\nType HELP for a list of allowed commands.\n", f);
 }
 
 static void loop(void)
@@ -716,8 +742,8 @@ static void loop(void)
 	size_t len;
 	char line[75];
 
-	print_version(stdout);
-	printf("\nType 'help' for the list of available commands.\n\n");
+	print_prologue(stdout);
+	printf("\n");
 	run_config();
 	printf("> ");
 	while (fgets(line, sizeof(line), stdin) != NULL) {
@@ -781,11 +807,12 @@ static void print_help(const char *argv0)
 "--filter is given, in which case stdin will be encoded to stdout.\n"
 "\n"
 "Options:\n"
-"  -f, --filter        Encode stdin to stdout.\n"      	
-"  -h, --help          Display this help and exit.\n"
-"  -k, --key=KEY       Set the initial machine configuration. For example:\n"
-"                      -k \"c Gamma V IV I 1 26 2 3 RTJZ BT RJ\".\n"
-"  -v, --version       Output version information and exit.\n"
+"  -h, --help       Display this help and exit.\n"
+"  -v, --version    Output version information and exit.\n"
+"  -l, --license    Display the license text and exit.\n"
+"  -f, --filter     Encode stdin to stdout.\n"      	
+"  -k, --key=KEY    Set the initial machine configuration. For example:\n"
+"                   -k \"c Gamma V IV I 1 26 2 3 RTJZ BT RJ\".\n"
 "\n"
 "Report bugs to: <" PACKAGE_BUGREPORT ">.\n"
 "Home page: <" PACKAGE_URL ">.\n"
@@ -802,6 +829,7 @@ static void handle_options(int argc, char *argv[])
 	static struct ngetopt_opt ops[] = {
 		{ "version", 0, 'v' },
 		{ "help", 0, 'h' },
+		{ "license", 0, 'l' },
 		{ "key", 1, 'k' },
 		{ "filter", 0, 'f' },
 		{ NULL, 0, 0 },
@@ -816,6 +844,11 @@ static void handle_options(int argc, char *argv[])
 			exit(EXIT_SUCCESS);
 		case 'h':
 			print_help(argv[0]);
+			exit(EXIT_SUCCESS);
+		case 'l':
+			print_copyright(stdout);
+			fputs("\n", stdout);
+			print_license(stdout);
 			exit(EXIT_SUCCESS);
 		case 'k':
 			if (!set_key(ngo.optarg)) {

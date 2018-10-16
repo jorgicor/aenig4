@@ -1,28 +1,22 @@
+/* ===========================================================================
+ * aenig4, Enigma M4 cipher machine emulator.
+ *
+ * Handling of command line options, similar to getopt.
+ * ===========================================================================
+ */
+
 /*
-Copyright (c) 2014-2017 Jorge Giner Cordero
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Changes:
+ *
+ * - Jul 22 2018: long options without short option character recognized.
+ *
+ */
 
 #include "ngetopt.h"
+
+#ifndef STRING_H
 #include <string.h>
+#endif
 
 static int find_short_opt(int val, struct ngetopt_opt *ops)
 {
@@ -30,7 +24,7 @@ static int find_short_opt(int val, struct ngetopt_opt *ops)
 
 	i = 0;
 	while (ops[i].name != NULL) {
-		if (ops[i].val == val)
+		if (ops[i].val > 0 && ops[i].val == val)
 			return i;
 		i++;
 	}
@@ -121,6 +115,7 @@ static int get_opt(struct ngetopt *p)
 	int i;
 	char *opt, *optnext;
 
+	/* all arguments consumed */
 	if (p->optind >= p->argc)
 		return -1;
 
@@ -168,6 +163,7 @@ static int get_opt(struct ngetopt *p)
 	if (*optnext == '\0' && !p->ops[i].has_arg) {
 		/* doesn't need arguments */
 		p->optind++;
+		p->optstr = opt + 2;
 		return p->ops[i].val;
 	}
 
@@ -182,6 +178,7 @@ static int get_opt(struct ngetopt *p)
 	if (*optnext == '\0') {
 		p->optind++;
 		if (p->optind < p->argc) {
+			p->optstr = opt + 2;
 			p->optarg = p->argv[p->optind];
 			p->optind++;
 			return p->ops[i].val;
@@ -194,14 +191,22 @@ static int get_opt(struct ngetopt *p)
 	}
 
 	/* *optnext == '=' */
+	*optnext = '\0';
+	p->optstr = opt + 2;
 	p->optarg = optnext + 1;
 	p->optind++;
 	return p->ops[i].val;
 }
 
 /*
- * If ok, val is the character of the option found, optarg is the
- * option argument or NULL.
+ * If ok:
+ *
+ * 	- For a long option with a zero value single character option, 0 is
+ * 	returned, optstr is the string of the long option (without '-' or '--')
+ * 	and optarg is the option argument or NULL.
+ *
+ * 	- For anything else the single option character is returned and optarg
+ * 	is the option argument or NULL.
  *
  * If the option is not recognized, '?' is returned, and optarg is the
  * literal string of the option not recognized (already with '-' or '--'

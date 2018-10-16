@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# This script is used by the author to make the Windows version.
+# ===========================================================================
+# aenig4, Enigma M4 cipher machine emulator.
+#
+# This script is used by the author to build the Windows package under Cygwin.
+# ===========================================================================
 
 case $# in
 	2) aenig4_vmaj=$1; aenig4_vmin=$2 ;;
@@ -29,7 +33,7 @@ show_menu () {
 download_src () {
 	if [ ! -f $aenig4_targz ]
 	then
-		wget -c http://jorgicor.sdfeu.org/aenig4/$aenig4_targz
+		wget -c https://jorgicor.niobe.org/aenig4/$aenig4_targz
 		if [ $? -ne 0 ]
 		then
 			echo "Error downloading $aenig4_targz"
@@ -67,7 +71,7 @@ make_zip () {
 		mv tmp.txt $i
 	done
 	sed -i 's,http://cryptomuseum.com/crypto/enigma/m4/index.htm,<a href="http://cryptomuseum.com/crypto/enigma/m4/index.htm">http://cryptomuseum.com/crypto/enigma/m4/index.htm</a>,' aenig4.html
-	sed -i 's,http://jorgicor.sdfeu.org/aenig4,<a href="http://jorgicor.sdfeu.org/aenig4">http://jorgicor.sdfeu.org/aenig4</a>,' aenig4.html
+	sed -i 's,https://jorgicor.niobe.org/aenig4,<a href="https://jorgicor.niobe.org/aenig4">https://jorgicor.niobe.org/aenig4</a>,' aenig4.html
 	i686-w64-mingw32-strip aenig4.exe
 	cd ..
 	zip -r $aenig4_wname.zip $aenig4_wname

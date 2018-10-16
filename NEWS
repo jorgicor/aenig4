@@ -1,3 +1,8 @@
+1.04	2018-10-16
+
+	* Changed project website to https://jorgicor.niobe.org/aenig4 .
+	* Added license command in interactive mode.
+
 1.03	2017-04-04
 
 	* Changed the format of the NEWS file.

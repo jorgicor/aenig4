@@ -10,7 +10,5 @@ http://cryptomuseum.com/crypto/enigma/m4/index.htm
 
 aenig4 is free software. See the file `COPYING` for copying conditions.
 
-Copyright (c) 2016 Jorge Giner Cordero
-
-Home page: http://jorgicor.sdfeu.org/aenig4  
+Home page: https://jorgicor.niobe.org/aenig4  
 Send bug reports to: jorge.giner@hotmail.com
